@@ -294,22 +294,6 @@ For multiple backend instances, add the Socket.IO Redis adapter so real-time eve
 
 AI was used as a development assistant to translate the assessment into a traceable checklist, propose structure, draft implementation and tests, review edge cases, and improve documentation. The implementation, configuration, security choices, deployment secrets, live behavior, and final submission still require human review and verification.
 
-## 12–15 minute walkthrough outline
-
-1. **0:00–1:00 — Requirements:** introduce the problem and assessment checklist.
-2. **1:00–2:30 — Architecture:** explain the React, Express, MongoDB, and Socket.IO boundaries.
-3. **2:30–5:30 — Customer journey:** register, browse the menu, update the cart, validate checkout, and place an order.
-4. **5:30–7:00 — Live tracking:** show the expandable order drawer and customer status updates.
-5. **7:00–9:30 — Restaurant journey:** receive the order, update statuses, and manage menu items.
-6. **9:30–11:30 — Code quality:** show controllers, services, validation, snapshots, and ownership checks.
-7. **11:30–13:00 — Tests:** demonstrate API and component test coverage.
-8. **13:00–14:00 — Deployment:** cover Vercel, Render, Atlas, environment variables, and health monitoring.
-9. **14:00–15:00 — Trade-offs:** discuss challenges, AI assistance, and production follow-ups.
-
-## Production follow-ups
-
-Before a public launch, add email verification, password reset, refresh-token rotation or secure cookie sessions, individual restaurant staff accounts and roles, granular menu permissions, request monitoring, idempotency keys, payment processing, Redis-backed Socket.IO scaling, and browser end-to-end tests.
-
 ## Author
 
 **Siddharth Gautam**
