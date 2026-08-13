@@ -24,7 +24,7 @@ export function AuthForm({ onAuthenticate }) {
   const switchMode = () => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); };
   return <main className="auth-page"><section className="auth-card">
     <Link to="/" className="brand"><span className="brand-mark">Q</span>QuickBite</Link>
-    <span className="eyebrow">Welcome</span>
+    {/* <span className="eyebrow">Welcome</span> */}
     <h1>{mode === 'login' ? 'Sign in to order' : 'Create your account'}</h1>
     <p>{mode === 'login' ? 'Your next meal is only a few clicks away.' : 'Register once, then order and track securely.'}</p>
     <form onSubmit={submit} noValidate>
