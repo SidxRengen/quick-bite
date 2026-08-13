@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
-import { api } from '../api.js';
-import { useSnackbar } from '../context/SnackbarContext.jsx';
-import { MenuItemForm } from './admin/MenuItemForm.jsx';
-import { MenuItemList } from './admin/MenuItemList.jsx';
+import { useCallback, useEffect, useState } from "react";
+import { api } from "../api.js";
+import { useSnackbar } from "../context/SnackbarContext.jsx";
+import { MenuItemForm } from "./admin/MenuItemForm.jsx";
+import { MenuItemList } from "./admin/MenuItemList.jsx";
 
 const EMPTY_ITEM = {
-  name: '',
-  description: '',
-  price: '',
-  image: '',
-  category: '',
+  name: "",
+  description: "",
+  price: "",
+  image: "",
+  category: "",
   available: true,
 };
 
@@ -28,66 +28,71 @@ export function AdminPanel({ embedded = false }) {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { showSnackbar } = useSnackbar();
 
   const loadItems = useCallback(async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       setItems(await api.adminMenu());
     } catch (requestError) {
       setError(requestError.message);
-      showSnackbar(requestError.message, { variant: 'error' });
+      showSnackbar(requestError.message, { variant: "error" });
     } finally {
       setLoading(false);
     }
   }, [showSnackbar]);
 
-  useEffect(() => { loadItems(); }, [loadItems]);
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   const resetForm = () => {
     setForm(EMPTY_ITEM);
     setEditingId(null);
-    setError('');
+    setError("");
   };
 
   const editItem = (item) => {
     setEditingId(item._id);
     setForm(toEditableItem(item));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const saveItem = async (event) => {
     event.preventDefault();
     setSaving(true);
-    setError('');
+    setError("");
 
     const payload = { ...form, price: Number(form.price) };
     try {
-      const message = editingId ? 'Menu item updated' : 'Menu item added';
+      const message = editingId ? "Menu item updated" : "Menu item added";
       if (editingId) await api.updateMenuItem(editingId, payload);
       else await api.createMenuItem(payload);
       resetForm();
       await loadItems();
-      showSnackbar(message, { variant: 'success' });
+      showSnackbar(message, { variant: "success" });
     } catch (requestError) {
       setError(requestError.message);
-      showSnackbar(requestError.message, { variant: 'error' });
+      showSnackbar(requestError.message, { variant: "error" });
     } finally {
       setSaving(false);
     }
   };
 
   const toggleAvailability = async (item) => {
-    setError('');
+    setError("");
     try {
       await api.updateMenuItem(item._id, { available: !item.available });
       await loadItems();
-      showSnackbar(`${item.name} is now ${item.available ? 'hidden' : 'available'}`, { variant: 'success' });
+      showSnackbar(
+        `${item.name} is now ${item.available ? "hidden" : "available"}`,
+        { variant: "success" },
+      );
     } catch (requestError) {
       setError(requestError.message);
-      showSnackbar(requestError.message, { variant: 'error' });
+      showSnackbar(requestError.message, { variant: "error" });
     }
   };
 
@@ -97,20 +102,23 @@ export function AdminPanel({ embedded = false }) {
     );
     if (!confirmed) return;
 
-    setError('');
+    setError("");
     try {
       await api.deleteMenuItem(item._id);
       if (editingId === item._id) resetForm();
       await loadItems();
-      showSnackbar(`${item.name} deleted`, { variant: 'success' });
+      showSnackbar(`${item.name} deleted`, { variant: "success" });
     } catch (requestError) {
       setError(requestError.message);
-      showSnackbar(requestError.message, { variant: 'error' });
+      showSnackbar(requestError.message, { variant: "error" });
     }
   };
 
   return (
-    <section className={`admin-page ${embedded ? 'embedded-admin' : ''}`} aria-label="Menu management">
+    <section
+      className={`admin-page ${embedded ? "embedded-admin" : ""}`}
+      aria-label="Menu management"
+    >
       <MenuItemForm
         value={form}
         editing={Boolean(editingId)}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export function MenuCard({ item, onAdd }) {
   const [imageFailed, setImageFailed] = useState(false);
@@ -15,8 +15,12 @@ export function MenuCard({ item, onAdd }) {
             onError={() => setImageFailed(true)}
           />
         ) : (
-          <div className="menu-image-fallback" role="img" aria-label={`${item.name} image unavailable`}>
-            <span>{item.name?.charAt(0) || 'Q'}</span>
+          <div
+            className="menu-image-fallback"
+            role="img"
+            aria-label={`${item.name} image unavailable`}
+          >
+            <span>{item.name?.charAt(0) || "Q"}</span>
           </div>
         )}
         <div className="menu-image-shade" aria-hidden="true" />
@@ -34,7 +38,11 @@ export function MenuCard({ item, onAdd }) {
             <small>Price</small>
             <strong>₹{item.price.toFixed(2)}</strong>
           </div>
-          <button className="add-button" onClick={() => onAdd(item)} aria-label={`Add ${item.name} to cart`}>
+          <button
+            className="add-button"
+            onClick={() => onAdd(item)}
+            aria-label={`Add ${item.name} to cart`}
+          >
             <span aria-hidden="true">+</span> Add to cart
           </button>
         </footer>

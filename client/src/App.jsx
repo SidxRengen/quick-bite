@@ -1,9 +1,9 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import { ProtectedRoute } from './routes/ProtectedRoute.jsx';
-import { CustomerPage } from './pages/CustomerPage.jsx';
-import { LoginPage } from './pages/LoginPage.jsx';
-import { NotFoundPage } from './pages/NotFoundPage.jsx';
-import { RestaurantPage } from './pages/RestaurantPage.jsx';
+import { Navigate, Route, Routes } from "react-router-dom";
+import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
+import { CustomerPage } from "./pages/CustomerPage.jsx";
+import { LoginPage } from "./pages/LoginPage.jsx";
+import { NotFoundPage } from "./pages/NotFoundPage.jsx";
+import { RestaurantPage } from "./pages/RestaurantPage.jsx";
 
 export default function App() {
   return (

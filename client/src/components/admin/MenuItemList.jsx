@@ -1,4 +1,10 @@
-export function MenuItemList({ items, loading, onEdit, onToggleAvailability, onDelete }) {
+export function MenuItemList({
+  items,
+  loading,
+  onEdit,
+  onToggleAvailability,
+  onDelete,
+}) {
   return (
     <section className="admin-list" aria-labelledby="menu-items-heading">
       <div className="section-heading">
@@ -13,7 +19,9 @@ export function MenuItemList({ items, loading, onEdit, onToggleAvailability, onD
       {!loading && items.length === 0 && (
         <div className="admin-empty">
           <h3>No menu items yet</h3>
-          <p>Use the form above to add the first item, or run the seed command.</p>
+          <p>
+            Use the form above to add the first item, or run the seed command.
+          </p>
         </div>
       )}
 
@@ -30,14 +38,23 @@ export function MenuItemList({ items, loading, onEdit, onToggleAvailability, onD
               <strong>₹{item.price.toFixed(2)}</strong>
             </div>
             <div className="admin-item-actions">
-              <span className={`status-pill ${item.available ? 'available' : 'unavailable'}`}>
-                {item.available ? 'Available' : 'Hidden'}
+              <span
+                className={`status-pill ${item.available ? "available" : "unavailable"}`}
+              >
+                {item.available ? "Available" : "Hidden"}
               </span>
-              <button className="secondary" onClick={() => onEdit(item)}>Edit</button>
-              <button className="secondary" onClick={() => onToggleAvailability(item)}>
-                {item.available ? 'Hide' : 'Show'}
+              <button className="secondary" onClick={() => onEdit(item)}>
+                Edit
               </button>
-              <button className="danger" onClick={() => onDelete(item)}>Delete</button>
+              <button
+                className="secondary"
+                onClick={() => onToggleAvailability(item)}
+              >
+                {item.available ? "Hide" : "Show"}
+              </button>
+              <button className="danger" onClick={() => onDelete(item)}>
+                Delete
+              </button>
             </div>
           </article>
         ))}

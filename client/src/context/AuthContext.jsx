@@ -1,7 +1,14 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api } from '../api.js';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { api } from "../api.js";
 
-const TOKEN_KEY = 'quickbite_token';
+const TOKEN_KEY = "quickbite_token";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -15,7 +22,8 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    api.me()
+    api
+      .me()
       .then((response) => setUser(response.user))
       .catch(() => localStorage.removeItem(TOKEN_KEY))
       .finally(() => setCheckingSession(false));
@@ -42,7 +50,7 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used inside AuthProvider');
+  if (!context) throw new Error("useAuth must be used inside AuthProvider");
   return context;
 }
 

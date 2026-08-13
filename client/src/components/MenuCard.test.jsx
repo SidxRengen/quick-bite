@@ -1,29 +1,41 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
-import { MenuCard } from './MenuCard.jsx';
-const item = { _id: '1', name: 'Pizza', description: 'Fresh pizza', price: 200, image: '/pizza.jpg', category: 'Main' };
+import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
+import { MenuCard } from "./MenuCard.jsx";
+const item = {
+  _id: "1",
+  name: "Pizza",
+  description: "Fresh pizza",
+  price: 200,
+  image: "/pizza.jpg",
+  category: "Main",
+};
 
-describe('MenuCard', () => {
-  it('shows menu details and adds the item', async () => {
+describe("MenuCard", () => {
+  it("shows menu details and adds the item", async () => {
     const onAdd = vi.fn();
     render(<MenuCard item={item} onAdd={onAdd} />);
 
-    expect(screen.getByText('Pizza')).toBeInTheDocument();
-    expect(screen.getByText('Fresh pizza')).toBeInTheDocument();
-    expect(screen.getByText('Main')).toBeInTheDocument();
-    expect(screen.getByText('₹200.00')).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Pizza' })).toHaveAttribute('loading', 'lazy');
+    expect(screen.getByText("Pizza")).toBeInTheDocument();
+    expect(screen.getByText("Fresh pizza")).toBeInTheDocument();
+    expect(screen.getByText("Main")).toBeInTheDocument();
+    expect(screen.getByText("₹200.00")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Pizza" })).toHaveAttribute(
+      "loading",
+      "lazy",
+    );
 
-    await userEvent.click(screen.getByRole('button', { name: /add pizza/i }));
+    await userEvent.click(screen.getByRole("button", { name: /add pizza/i }));
     expect(onAdd).toHaveBeenCalledWith(item);
   });
 
-  it('shows a readable fallback when the image cannot load', () => {
+  it("shows a readable fallback when the image cannot load", () => {
     render(<MenuCard item={item} onAdd={() => {}} />);
 
-    fireEvent.error(screen.getByRole('img', { name: 'Pizza' }));
+    fireEvent.error(screen.getByRole("img", { name: "Pizza" }));
 
-    expect(screen.getByRole('img', { name: /pizza image unavailable/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: /pizza image unavailable/i }),
+    ).toBeInTheDocument();
   });
 });
