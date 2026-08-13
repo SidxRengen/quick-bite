@@ -1,183 +1,315 @@
-# QuickBite - MERN Order Management
+# QuickBite — MERN Food Ordering Application
 
-QuickBite is a production-minded food ordering assessment project. Customers browse a seeded menu, manage quantities, enter delivery details, place an order, and watch its status progress live through Socket.IO.
+QuickBite is a full-stack food-ordering application built for the Full Stack Developer assessment. It provides separate customer and restaurant workflows, persistent MongoDB storage, secure authentication, REST APIs, and real-time order updates with Socket.IO.
+
+## Live project
+
+| Resource | Link |
+|---|---|
+| Customer application | [quick-bite-rho-three.vercel.app](https://quick-bite-rho-three.vercel.app) |
+| Restaurant workspace | [quick-bite-rho-three.vercel.app/restaurant](https://quick-bite-rho-three.vercel.app/restaurant) |
+| Backend health check | [quick-bite-2y79.onrender.com/api/health](https://quick-bite-2y79.onrender.com/api/health) |
+| GitHub repository | [github.com/SidxRengen/quick-bite](https://github.com/SidxRengen/quick-bite) |
+
+> The restaurant assessment access key is intentionally not committed. It should be shared privately with the reviewer and rotated after the evaluation.
+
+## Reviewer walkthrough
+
+### Customer flow
+
+1. Open the [customer application](https://quick-bite-rho-three.vercel.app).
+2. Create an account using a valid name, email address, and password of at least eight characters.
+3. Browse the menu and add items to the cart.
+4. Increase or decrease quantities and proceed to checkout.
+5. Enter the delivery address and phone number. The customer name is taken securely from the authenticated account.
+6. Place the order and use the expandable panel at the bottom of the page to follow its live status.
+
+### Restaurant flow
+
+1. Open the [restaurant workspace](https://quick-bite-rho-three.vercel.app/restaurant).
+2. Enter the restaurant assessment access key shared with the submission.
+3. View newly placed customer orders in the live queue.
+4. Advance an order through `Order Received` → `Preparing` → `Out for Delivery` → `Delivered`.
+5. Open **Menu management** to create, edit, hide, restore, or delete menu items.
+
+Open the customer and restaurant pages in separate browser windows to demonstrate the Socket.IO updates in real time.
+
+## Main features
+
+- Email/password registration and login with bcrypt password hashing and JWT sessions
+- Responsive menu cards with name, description, price, category, image, lazy loading, and image fallbacks
+- Cart quantity controls with zero-item removal and a maximum quantity guard
+- Checkout using the authenticated customer's name, delivery address, and phone number
+- Server-calculated prices and totals that do not trust client-supplied values
+- Expandable customer order tracker fixed to the bottom of the page
+- Restaurant order queue with protected, sequential status transitions
+- Real-time order placement and status notifications through Socket.IO
+- Integrated restaurant menu management with CRUD and availability controls
+- Accessible snackbar feedback, loading, empty, retry, error, and submitting states
+- Responsive customer, restaurant, authentication, menu, cart, and status interfaces
+- MongoDB/Mongoose persistence with validation, indexes, timestamps, and order snapshots
+- Automated REST API, validation, CRUD, status-transition, and React component tests
 
 ## Assessment checklist
 
-| Requirement / evaluation point | Implementation |
+| Requirement | Implementation |
 |---|---|
-| Menu name, description, price, image | Responsive cards in `client/src/components/MenuCard.jsx`; persisted `MenuItem` model and seed data |
-| Cart and quantity controls | Reusable `useCart` hook and accessible increment/decrement controls; zero removes, maximum 99 |
-| Checkout: name, address, phone | Name comes from the authenticated account; the modal asks only for address and phone, with authoritative server validation |
-| Place an order | `POST /api/orders`; server looks up current menu prices, calculates total, stores snapshot and history |
-| Display order status | Expandable bottom order drawer with Order Received, Preparing, Out for Delivery, Delivered, and cancelled states |
-| Real-time restaurant workflow | Restaurant receives new orders instantly and explicitly advances sequential statuses through REST + Socket.IO |
-| Menu REST API | `GET /api/menu` returns available items |
-| Restaurant menu management | The protected `/restaurant` workspace includes create, edit, availability toggle, and delete controls; legacy `/admin` redirects there |
-| Order CRUD | Create/list/read, status update, and safe deletion of cancelled orders |
-| Status update API | Restaurant-only `PATCH /api/restaurant/orders/:id/status`, sequential transitions, and terminal-state protection |
-| MongoDB persistence | Mongoose schemas, validation, timestamps, reference IDs, order snapshots and indexes |
-| Basic authentication | Email/password registration and login, bcrypt password hashing, expiring JWTs, session restore, sign-out, and owner-scoped orders/WebSockets |
-| Robust validation / edge cases | Invalid IDs, empty carts, malformed customers, missing/unavailable items, duplicate item aggregation, quantity bounds, server-owned prices, terminal orders, 404s and safe errors |
-| Clean scalable structure | Client components/hooks/API boundary; server routes/controllers/services/models/config/middleware |
-| Security / API quality | Hashed passwords, customer JWTs, separate restaurant access-key JWT, order ownership, authenticated sockets, Helmet, allow-listed CORS, JSON size limit, rate limiting, REST status codes, and server-owned totals |
-| Responsive UX | Loading, empty, failure, retry, submitting, confirmation and live states; mobile layout and accessible labels |
-| Snackbar notifications | Reusable accessible snackbar stack for authentication, order placement, live status changes, restaurant events, menu actions and errors |
-| Tests / TDD evidence | Vitest + Supertest + in-memory MongoDB API tests; Testing Library component tests |
-| Documentation and delivery | This README includes setup, architecture, design decisions, AI usage, challenges, deployment, and walkthrough |
+| Menu display | Responsive cards show name, description, price, image, and category |
+| Cart | Add items and increase, decrease, or remove quantities |
+| Checkout | Authenticated name plus validated address and phone number |
+| Order placement | `POST /api/orders` validates items and calculates the total on the server |
+| Order status | Expandable customer tracker with the complete status timeline |
+| Restaurant workflow | Live queue and controlled sequential status updates |
+| Real-time updates | Protected Socket.IO customer rooms and restaurant channel |
+| Menu APIs | Public retrieval plus restaurant-protected create, update, availability, and delete endpoints |
+| Order CRUD | Create, list, read, cancel, status update, and safe deletion behavior |
+| Persistence | MongoDB Atlas with Mongoose schemas and indexes |
+| Authentication | Customer JWTs and a separate restaurant access-key JWT |
+| Validation | Invalid IDs, unavailable items, empty carts, duplicate items, quantity limits, malformed contact data, and terminal states |
+| Code quality | Modular routes, controllers, services, models, middleware, hooks, pages, and components |
+| Testing | Vitest, Supertest, MongoDB Memory Server, and Testing Library |
+| Deployment | Vercel frontend, Render backend, MongoDB Atlas, environment examples, health check, and SPA fallbacks |
 
-## Stack
+## Technology stack
 
-- Frontend: React 19, Vite, Socket.IO client, plain responsive CSS
-- Routing: React Router DOM with separate customer, login and restaurant workspaces, a protected customer route, legacy admin redirect, and not-found route
-- Backend: Node.js, Express, Socket.IO, bcryptjs, JSON Web Tokens
-- Persistence: MongoDB with Mongoose
-- Tests: Vitest, Supertest, MongoDB Memory Server, Testing Library
+- **Frontend:** React 19, Vite, React Router DOM, Socket.IO Client
+- **Backend:** Node.js, Express, Socket.IO, JWT, bcryptjs
+- **Database:** MongoDB Atlas with Mongoose
+- **Testing:** Vitest, Supertest, MongoDB Memory Server, Testing Library, jsdom
+- **Deployment:** Vercel for the frontend and Render for the backend
+
+## Architecture
+
+```text
+Customer React app ── customer JWT ──> Express REST API ──> MongoDB
+       ▲                                      │
+       │ Socket.IO customer order room        │ Socket.IO restaurant feed
+       │                                      ▼
+Order status drawer <────────────── Restaurant workspace
+                                          │
+                                          └── restaurant JWT
+```
+
+The frontend communicates through a central API boundary. Express routes delegate to controllers and services, while Mongoose models own persistence rules. The order service reads current menu records, calculates the authoritative total, stores item snapshots, records status history, and emits updates only after a successful database operation.
+
+## Repository structure
+
+```text
+quick-bite/
+├── client/
+│   ├── public/                 Static assets and Netlify SPA fallback
+│   ├── src/
+│   │   ├── components/         Reusable customer, restaurant, and admin UI
+│   │   ├── context/            Authentication and snackbar state
+│   │   ├── hooks/              Cart, menu, order, and Socket.IO behavior
+│   │   ├── pages/              Route-level screens
+│   │   ├── routes/             Protected route handling
+│   │   ├── api.js              Central REST request boundary
+│   │   └── App.jsx             React Router route definitions
+│   └── vercel.json             Vercel SPA fallback for a client-root deployment
+├── server/
+│   └── src/
+│       ├── config/              Environment configuration
+│       ├── constants/           Shared domain constants
+│       ├── controllers/         HTTP request handlers
+│       ├── data/                Seed menu data
+│       ├── middleware/          Authentication, validation, and errors
+│       ├── models/              Mongoose schemas
+│       ├── routes/              REST route definitions
+│       ├── scripts/             Database seed command
+│       ├── services/            Authentication, menu, and order rules
+│       └── server.js            MongoDB and Socket.IO startup
+├── vercel.json                 SPA fallback for a repository-root deployment
+└── README.md
+```
 
 ## Local setup
 
-Requirements: Node.js 20+ and MongoDB 7+ (local or Atlas).
+### Requirements
+
+- Node.js 20 or newer
+- npm
+- MongoDB 7+ locally, or a MongoDB Atlas connection string
+
+### Installation
 
 ```bash
+git clone https://github.com/SidxRengen/quick-bite.git
+cd quick-bite
 npm install
 npm run install:all
 cp server/.env.example server/.env
 cp client/.env.example client/.env
-# Set MONGODB_URI and a long random JWT_SECRET in server/.env
+```
+
+Configure `server/.env`:
+
+```env
+PORT=8008
+MONGODB_URI=mongodb://127.0.0.1:27017/quickbite
+CLIENT_ORIGIN=http://localhost:5173
+JWT_SECRET=replace-with-a-long-random-secret
+JWT_EXPIRES_IN=7d
+RESTAURANT_ACCESS_KEY=replace-with-a-private-restaurant-key
+```
+
+Configure `client/.env`:
+
+```env
+VITE_API_URL=http://localhost:8008/api
+VITE_SOCKET_URL=http://localhost:8008
+```
+
+Seed the menu and start both applications:
+
+```bash
 npm run seed --prefix server
 npm run dev
 ```
 
-Open `http://localhost:5173` for the customer app. The access-key-protected restaurant workspace is at `/restaurant` and contains both the live order board and menu management. The old `/admin` URL redirects to `/restaurant`. The backend runs on port `8008`; API health is at `http://localhost:8008/api/health`.
+| Local service | URL |
+|---|---|
+| Customer application | `http://localhost:5173` |
+| Restaurant workspace | `http://localhost:5173/restaurant` |
+| Backend API | `http://localhost:8008/api` |
+| Health check | `http://localhost:8008/api/health` |
 
-### Frontend structure
+The seed command inserts only missing menu items by name. It does not delete or overwrite items created through the restaurant workspace.
 
-```text
-src/App.jsx                  Route definitions only
-src/context/AuthContext.jsx Session, login and logout state
-src/routes/                 Route guards
-src/pages/                  Customer, login, restaurant and not-found pages
-src/components/             Reusable UI components
-src/hooks/                  Menu, cart and real-time order behavior
-src/api.js                  Backend request boundary
-```
+## Tests and production build
 
-The included `client/public/_redirects` file provides the SPA fallback required for direct React Router URLs on Netlify-compatible hosting.
-
-### Test and build
+Run the complete backend and frontend test suites:
 
 ```bash
 npm test
+```
+
+Build the frontend for production:
+
+```bash
 npm run build --prefix client
 ```
 
-The tests use an ephemeral MongoDB and do not modify the development database.
+Backend tests use MongoDB Memory Server and do not modify the configured development or production database.
 
 ## API reference
 
-| Method | Route | Purpose |
-|---|---|---|
-| GET | `/api/health` | Health check |
-| GET | `/api/menu` | Available menu |
-| GET | `/api/menu/admin` | List all menu items, including hidden ones (restaurant JWT) |
-| POST | `/api/menu` | Create a menu item (restaurant JWT) |
-| PATCH | `/api/menu/:id` | Edit item fields or availability (restaurant JWT) |
-| DELETE | `/api/menu/:id` | Delete a menu item (restaurant JWT) |
-| POST | `/api/restaurant/login` | Exchange the private access key for a 12-hour restaurant JWT |
-| GET | `/api/restaurant/orders` | Restaurant queue with customer and item details |
-| PATCH | `/api/restaurant/orders/:id/status` | Advance to the next restaurant status |
-| POST | `/api/auth/register` | Create an account and receive a JWT |
-| POST | `/api/auth/login` | Sign in and receive a JWT |
-| GET | `/api/auth/me` | Read the authenticated user |
-| GET | `/api/orders` | List the authenticated user's orders |
-| POST | `/api/orders` | Create order |
-| GET | `/api/orders/:id` | Read one order |
-| PATCH | `/api/orders/:id/status` | Customer cancellation before preparation begins |
-| DELETE | `/api/orders/:id` | Delete a cancelled order |
+All API routes use the `/api` prefix.
 
-Order routes require `Authorization: Bearer YOUR_JWT`. Register with `{ "name": "Ada", "email": "ada@example.com", "password": "securepass123" }` or log in with email and password.
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| GET | `/health` | Public | Application and database health |
+| GET | `/menu` | Public | Retrieve available menu items |
+| GET | `/menu/admin` | Restaurant | Retrieve all menu items |
+| POST | `/menu` | Restaurant | Create a menu item |
+| PATCH | `/menu/:id` | Restaurant | Update a menu item or its availability |
+| DELETE | `/menu/:id` | Restaurant | Delete a menu item |
+| POST | `/auth/register` | Public | Register a customer and issue a JWT |
+| POST | `/auth/login` | Public | Authenticate a customer and issue a JWT |
+| GET | `/auth/me` | Customer | Restore the authenticated customer |
+| GET | `/orders` | Customer | List the customer's orders |
+| POST | `/orders` | Customer | Create an order |
+| GET | `/orders/:id` | Customer | Retrieve an owned order |
+| PATCH | `/orders/:id/status` | Customer | Cancel before preparation begins |
+| DELETE | `/orders/:id` | Customer | Delete a cancelled order |
+| POST | `/restaurant/login` | Public | Exchange the access key for a restaurant JWT |
+| GET | `/restaurant/orders` | Restaurant | Retrieve the restaurant order queue |
+| PATCH | `/restaurant/orders/:id/status` | Restaurant | Advance an order to its next status |
 
-Restaurant order and menu-management routes require the restaurant JWT returned by `/api/restaurant/login`. The seed command inserts only missing sample items by name and never deletes or overwrites items created through the restaurant menu manager.
+Customer-protected endpoints require `Authorization: Bearer <CUSTOMER_JWT>`. Restaurant-protected endpoints require the restaurant JWT returned by `/restaurant/login`.
 
-Create order payload:
+Example order payload:
 
 ```json
 {
-  "customer": { "address": "12 Computing Lane", "phone": "+91 9876543210" },
-  "items": [{ "menuItemId": "MONGODB_OBJECT_ID", "quantity": 2 }]
+  "customer": {
+    "address": "12 Computing Lane",
+    "phone": "+91 9876543210"
+  },
+  "items": [
+    {
+      "menuItemId": "MONGODB_OBJECT_ID",
+      "quantity": 2
+    }
+  ]
 }
 ```
 
-New orders start at `Order Received`. Restaurant transitions must occur in order: `Preparing` → `Out for Delivery` → `Delivered`. Skipping or reversing a step returns `409`.
+The API ignores any client-supplied customer name and uses the authenticated account name. It also ignores client-supplied prices and recalculates each total from MongoDB.
 
-The API ignores any client-supplied customer name and snapshots the name from the authenticated user account when the order is created.
+## Design and security decisions
 
-Customer sockets send the customer JWT as `auth.token`, then subscribe to their order room. Restaurant sockets send the restaurant JWT and join the protected kitchen feed. New orders and every restaurant status update are delivered instantly to the correct views.
-
-## Architecture and design notes
-
-```text
-Customer UI -> customer JWT -> order API/service -> MongoDB
-     ^                                |
-     | Socket.IO order room           | Socket.IO kitchen feed
-     |                                v
-Bottom status drawer        Restaurant workspace -> restaurant JWT APIs
-```
-
-- Prices and item names are copied from the database at checkout. Historical orders stay accurate if menu data later changes, and malicious client prices are ignored.
-- Business rules live in `orderService`, separate from HTTP and Socket.IO, so other delivery mechanisms can reuse them.
-- An order records every status change. Terminal states cannot transition, preventing accidental regression after delivery/cancellation.
-- At scale, use the Socket.IO Redis adapter, paginate restaurant history, and replace the shared restaurant access key with individual staff accounts and roles.
-- Currency is stored as a number for assessment readability. A production payment system should store integer minor units (paise) or Decimal128.
+- Passwords are one-way hashed and are never returned by the API.
+- Customer and restaurant JWTs have separate authorization checks.
+- Customers can only read, cancel, delete, and subscribe to their own orders.
+- Restaurant sockets and APIs require restaurant authentication.
+- Order item names and prices are snapshotted so historical orders remain accurate after menu changes.
+- Status transitions are sequential, and delivered or cancelled orders are terminal.
+- Helmet, allow-listed CORS, rate limiting, JSON size limits, validation, and centralized error handling protect the API boundary.
+- Secrets are loaded through environment variables and excluded from Git.
 
 ## Challenges and solutions
 
-- **Trust boundary:** cart totals can be manipulated in a browser. The API accepts only item IDs/quantities and recalculates from MongoDB.
-- **Changing menu data:** order lines snapshot the purchased name and price while keeping a menu reference.
-- **Real-time isolation:** global broadcasts can leak unrelated activity. Each tracker joins its own order room.
-- **Authentication:** passwords are one-way hashed, JWTs expire, and REST/Socket.IO access checks order ownership.
-- **Two-sided consistency:** the restaurant API saves the status first, then broadcasts the saved order to both the kitchen and the owning customer.
-- **Invalid transitions:** delivered/cancelled orders are terminal; deleting active/history-bearing orders is rejected.
-- **Test isolation:** API tests run against MongoDB Memory Server and clear collections after every test.
+- **Untrusted cart totals:** the server accepts IDs and quantities, then calculates the total from stored menu prices.
+- **Changing menu records:** each order keeps an immutable name and price snapshot while retaining its menu reference.
+- **Private real-time updates:** customers join owner-checked order rooms instead of receiving global broadcasts.
+- **Two-sided consistency:** the database update completes before Socket.IO notifies the restaurant and customer.
+- **Invalid status changes:** the service rejects skipped, reversed, and terminal-state transitions.
+- **Test isolation:** API tests use an ephemeral MongoDB and clear state between tests.
+- **Deployed client routing:** Vercel rewrite configurations serve `index.html` for direct React Router URLs such as `/login` and `/restaurant`.
 
-## AI usage notes
+## Deployment
 
-AI was used as a development assistant to translate the assessment into a traceable checklist, propose project structure, draft implementation/tests, and review edge cases and documentation. Human review remains necessary for product decisions, security policy, branding, live accessibility testing, deployment secrets, and production load testing. No hosted, GitHub, or Loom URL is claimed by this repository.
+### Frontend — Vercel
 
-## Deployment guidance
+- Root Directory: `client`
+- Framework Preset: Vite
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment variables:
+  - `VITE_API_URL=https://quick-bite-2y79.onrender.com/api`
+  - `VITE_SOCKET_URL=https://quick-bite-2y79.onrender.com`
 
-### Database (MongoDB Atlas)
+The repository includes Vercel SPA rewrites at both the repository root and `client` root. Direct visits and refreshes on React Router paths therefore load `index.html` instead of returning a Vercel 404.
 
-1. Create a cluster and least-privilege database user.
-2. Configure network access for the backend host only where possible.
-3. Set backend `MONGODB_URI` to the Atlas connection string; never commit it.
-4. Run the seed once with the production URI from a controlled environment.
+### Backend — Render
 
-### Backend (Render, Railway, Fly.io, or a VM)
+- Root Directory: `server`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Health Check Path: `/api/health`
+- Required environment variables: `PORT`, `MONGODB_URI`, `CLIENT_ORIGIN`, `JWT_SECRET`, `JWT_EXPIRES_IN`, and `RESTAURANT_ACCESS_KEY`
 
-1. Deploy the `server` directory with `npm install` and `npm start`.
-2. Set `PORT`, `MONGODB_URI`, `CLIENT_ORIGIN`, `JWT_SECRET`, `JWT_EXPIRES_IN`, and a private `RESTAURANT_ACCESS_KEY`.
-3. Ensure WebSocket upgrades are enabled and expose `/api/health` for health checks.
-4. For multiple instances, configure the Socket.IO Redis adapter so customer and restaurant events cross instances.
+### Database — MongoDB Atlas
 
-### Frontend (Vercel, Netlify, or static hosting)
+- Use a least-privilege database user.
+- Keep the connection string only in the backend environment configuration.
+- Restrict network access to the backend provider whenever practical.
+- Run the seed command once against the intended database.
+- Rotate any credential that has been shared outside the deployment platform.
 
-1. Use `client` as the root, build with `npm run build`, and publish `dist`.
-2. Set `VITE_API_URL=https://YOUR_API_HOST/api` and `VITE_SOCKET_URL=https://YOUR_API_HOST` before building.
-3. Add HTTPS, a suitable CSP, and the deployed frontend origin to backend CORS.
+For multiple backend instances, add the Socket.IO Redis adapter so real-time events can cross processes.
 
-## 12-15 minute Loom walkthrough outline
+## AI usage
 
-1. **0:00-1:00 - Problem and checklist:** introduce the food-ordering flow and point to the assessment matrix.
-2. **1:00-2:30 - Architecture:** show client/server boundaries, MongoDB models, and Socket.IO order rooms.
-3. **2:30-5:30 - Customer demo:** register/login, browse menu, change quantities, validate checkout, and place an order.
-4. **5:30-7:00 - Live tracking:** place an order, expand the bottom drawer, then update it from the restaurant dashboard.
-5. **7:00-9:30 - Restaurant workspace and API:** demonstrate restaurant login, the integrated menu manager, queue retrieval, sequential status updates, customer ownership, status codes, and invalid transitions.
-6. **9:30-11:30 - Code quality:** explain service/controller separation, server-calculated price, snapshots, history and terminal states.
-7. **11:30-13:00 - Tests:** run the suite and highlight CRUD, validation, status and UI component coverage.
-8. **13:00-14:00 - Scale/security/deployment:** discuss JWT/ownership, admin roles, queues, Redis, secrets, CORS and hosting.
-9. **14:00-15:00 - AI/challenges/close:** explain transparent AI assistance, human verification, trade-offs and next steps.
+AI was used as a development assistant to translate the assessment into a traceable checklist, propose structure, draft implementation and tests, review edge cases, and improve documentation. The implementation, configuration, security choices, deployment secrets, live behavior, and final submission still require human review and verification.
 
-## Deliberate production follow-ups
+## 12–15 minute walkthrough outline
 
-Before a public launch, add email verification, password reset, refresh-token rotation or secure cookie sessions, individual restaurant staff accounts/roles, granular menu-management permissions, request monitoring, idempotency keys, payments, and end-to-end browser tests.
+1. **0:00–1:00 — Requirements:** introduce the problem and assessment checklist.
+2. **1:00–2:30 — Architecture:** explain the React, Express, MongoDB, and Socket.IO boundaries.
+3. **2:30–5:30 — Customer journey:** register, browse the menu, update the cart, validate checkout, and place an order.
+4. **5:30–7:00 — Live tracking:** show the expandable order drawer and customer status updates.
+5. **7:00–9:30 — Restaurant journey:** receive the order, update statuses, and manage menu items.
+6. **9:30–11:30 — Code quality:** show controllers, services, validation, snapshots, and ownership checks.
+7. **11:30–13:00 — Tests:** demonstrate API and component test coverage.
+8. **13:00–14:00 — Deployment:** cover Vercel, Render, Atlas, environment variables, and health monitoring.
+9. **14:00–15:00 — Trade-offs:** discuss challenges, AI assistance, and production follow-ups.
+
+## Production follow-ups
+
+Before a public launch, add email verification, password reset, refresh-token rotation or secure cookie sessions, individual restaurant staff accounts and roles, granular menu permissions, request monitoring, idempotency keys, payment processing, Redis-backed Socket.IO scaling, and browser end-to-end tests.
+
+## Author
+
+**Siddharth Gautam**
